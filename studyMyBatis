@@ -1,0 +1,41 @@
+学习实践总结：
+mybatis引入jar包
+    例： mysql-connector-java-XX-bin.jar mysql的驱动
+        ojdbc14-xx.jar oracle驱动
+
+实例化数据库连接说明：
+import java.sql.PreparedStatement  //一个接口
+
+    //数据库链接
+    Connection connection = null;
+    //预编译的Statement，使用预编译的Statement提高数据库性能 （通过statement向数据库发送sql语句，数据库将sql语句编译放在缓存中）
+    PreparedStatement preparedStatement = null;
+    //结果集对象
+    ResultSet resultSet = null;
+    
+    try{
+        //加载数据库驱动
+        Class.forName("com.mysql.jdbc.Driver");
+
+        //通过驱动管理获取数据库链接
+        connection DriverManager.getConnection(url,username,password);
+
+        //定义sql语句？表示占位符
+        String sql = "select * from table1 where columun = ?";
+        //获取预处理的statement
+        preparedStatement = connection.preparedStatement(sql);
+        //设置参数，第一个参数为sql语句中参数的序号（从1开始），第二个参数为参数值
+        preparedStatement.setString(1,"XX");
+        //向数据库发出sql执行查询，查询出结果集
+        resultSet = preparedStatement.executeQuery();
+        //遍历查询结果集
+        while(resultSet.next()){
+            System.out.println(resultSet.getString("xxx"))
+        }
+    }catch(Execption e){
+        e.printStackTrace();
+    }finally{
+        //释放资源 倒着释放
+        resultSet.close();
+        preparedStatement.close();
+    }
